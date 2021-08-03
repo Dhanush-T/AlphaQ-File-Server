@@ -14,14 +14,17 @@ RUN pip3 install thread6
 RUN pip3 install regex
 
 RUN mkdir /home/Delta_T3
-RUN cd /home/Delta_T3
 
-RUN mkdir main_folder client server
+RUN mkdir /home/Delta_T3/main_folder 
+RUN mkdir /home/Delta_T3/client 
+RUN mkdir /home/Delta_T3/server
 
 COPY ./server.py /home/Delta_T3/server
 RUN chmod +x /home/Delta_T3/server/server.py
+
 COPY ./client.py /home/Delta_T3/client
 RUN chmod +x /home/Delta_T3/client/client.py
 
-RUN cd /home/Delta_T3/main_folder
-RUN mkdir sysAd webDev appDev
+RUN mkdir /home/Delta_T3/main_folder/sysAd 
+RUN mkdir /home/Delta_T3/main_folder/webDev 
+RUN mkdir /home/Delta_T3/main_folder/appDev
