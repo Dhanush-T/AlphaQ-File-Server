@@ -9,6 +9,7 @@ from Crypto.Cipher import AES
 IP = '127.0.0.1'
 PORT = 4466
 main_path = "/home/daemondan/Delta_T3/"
+tLock = threading.Lock()
 
 sysAd = []
 appDev = []
@@ -59,6 +60,7 @@ def client(conn, addr):
         #This is to give a brief explaination about the available commands.
 
             if command == 'HELP' or command == '?':
+                tLock.acquire()
                 help = "\n\tLIST : To list all the available files from server.\n"
                 help += "\tUPLOAD <filename> : To upload file to the server.\n"
                 help += "\tDELETE <filename> : To delete the file from the server.\n"
@@ -67,6 +69,7 @@ def client(conn, addr):
                 help += "\tEXIT : To get logout from the server.\n"
                 help += "\tHELP : To list all the available commands."
                 conn.send(AES_EnDe(help, "en"))
+                tLock.release()
 
         #To exit out of the server terminal
 
@@ -78,6 +81,7 @@ def client(conn, addr):
         #To upload file to the server into the respective directory
 
             elif "UPLOAD" in command:
+                tLock.acquire()
                 response = AES_EnDe(conn.recv(1024), "de")
                 if "YES" in response:
                     conn.send(AES_EnDe("OK", "en"))
@@ -103,10 +107,12 @@ def client(conn, addr):
                              f.write(data)
 
                     conn.send(AES_EnDe("FILE UPLOADED SUCCESSFULLY..!!!", "en"))
+                    tLock.release()
 
             #To download files from the server into our local storage
 
             elif "DOWNLOAD" in command:
+                tLock.acquire()
                 cmd = command.split(" ")
                 filename = cmd[1]
                 if uname in sysAd:
@@ -136,10 +142,12 @@ def client(conn, addr):
                 else:
                     msg = "NO SUCH FILE EXISTS"
                     conn.send(AES_EnDe(msg, "en"))
+                tLock.release()
 
             #To list all the available files for the users from their respective domains
 
             elif command == "LIST":
+                tLock.acquire()
                 if uname in sysAd:
                     path="main_folder/sysAd"
                 elif uname in appDev:
@@ -154,10 +162,12 @@ def client(conn, addr):
                     i=i+1
 
                 conn.send(AES_EnDe(available_files, "en"))
+                tLock.release()
 
             #To remove a file from the server.
 
             elif "DELETE" in command:
+                tLock.acquire()
                 cmd = command.split(" ")
                 filename = cmd[1]
                 if uname in sysAd:
@@ -177,8 +187,10 @@ def client(conn, addr):
                 if yes_or_no == "y":
                     os.remove(filename)
                     conn.send(AES_EnDe("SUCCESSFULLY REMOVED..!!", "en"))
+                tLock.release()
 
             elif "SEARCH" in command:
+                tLock.acquire()
                 cmd = command.split(" ")
                 filename = cmd[1]
                 if uname in sysAd:
@@ -204,6 +216,7 @@ def client(conn, addr):
                             msg = msg+"\t"+str(i)+") "+file+"\n"
                             i=i+1
                     conn.send(AES_EnDe(msg, "en"))
+                tLock.release()
 
 
 
