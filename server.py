@@ -8,7 +8,7 @@ from Crypto.Cipher import AES
 
 IP = '127.0.0.1'
 PORT = 4466
-main_path = "/home/daemondan/Delta_T3/"
+main_path = "/home/daemondan/Delta/Task_3/"
 tLock = threading.Lock()
 
 sysAd = []
